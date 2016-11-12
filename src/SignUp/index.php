@@ -22,28 +22,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$email = test_input($_POST["email"]);
 	$password = test_input($_POST["password"]);
 	$roll = test_input($_POST["roll"]);
-	$servername = "localhost";
-	$username = "root";
-	$password = "";
+
+	$dbservername = "localhost";
+	$dbusername = "root";
+	$dbpassword = "";
 	$dbname = "mis";
-	$conn = new mysqli($servername, $username, $password, $dbname);
-	if($conn->connect_error) {
+	$dbconn = new mysqli($dbservername, $dbusername, $dbpassword, $dbname);
+	if($dbconn->connect_error) {
 		echo "Connection Failed ";
-	    die("Connection failed: " . $conn->connect_error);
+	    die("Connection failed: " . $dbconn->connect_error);
 	}
 	$forms = "SELECT * FROM form WHERE email = '$email'";
-	$formResult = $conn->query($forms);
+	$formResult = $dbconn->query($forms);
 	$requests = "SELECT * FROM requests WHERE email = '$email'";
-	$requestsResult = $conn->query($requests);
+	$requestsResult = $dbconn->query($requests);
 	$students = "SELECT * FROM student WHERE email = '$email'";
-	$studentResult = $conn->query($students);
+	$studentResult = $dbconn->query($students);
 	$teachers = "SELECT * FROM teacher WHERE email = '$email'";
-	$teacherResult = $conn->query($teachers);
+	$teacherResult = $dbconn->query($teachers);
 	$admins = "SELECT * FROM admin WHERE email = '$email'";
-	$adminResult = $conn->query($admins);
+	$adminResult = $dbconn->query($admins);
 	if($formResult->num_rows == 0 && $requestsResult->num_rows == 0 &&$studentResult->num_rows == 0 && $teacherResult->num_rows == 0 && $adminResult->num_rows == 0){
 		$sql = "INSERT INTO form (name, roll, email, password) VALUES ('$name', '$roll', '$email', '$password')";
-		if($conn->query($sql)){
+		if($dbconn->query($sql)){
 			echo "<script>alert('Registration Successfull. Verify Your Email.');</script>";
 			header("refresh:0; url=http://localhost/mis/");
 		}
@@ -54,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	else{
 		echo "<script>alert('Email Already taken. Retry with a different Email.');</script>";
 	}
-	$conn->close();
+	$dbconn->close();
 }
 
 function test_input($data) {
