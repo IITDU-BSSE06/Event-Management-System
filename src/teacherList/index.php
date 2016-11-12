@@ -1,10 +1,5 @@
 <?php
-	include("../System/System.php");
-	$system = new System();
-	if($system->userTypeLoggedIn() != "admin"){
-		$system->redirectToHomePage();
-		die();
-	}
+	session_start();
 	include("../headers/header.php");
 	include("../headers/adminheader.php");
 ?>
@@ -12,7 +7,17 @@
 <body>
 	<div>
 	<?php
-		$result = $system->getTableContent("teacher");
+		$dbservername = "localhost";
+	    $dbusername = "root";
+	    $dbpassword = "";
+	    $dbname = "mis";
+	    $dbconn = new mysqli($dbservername, $dbusername, $dbpassword, $dbname);
+	    if($dbconn->connect_error) {
+	        echo "Connection Failed ";
+	        die("Connection failed: " . $dbconn->connect_error);
+	    }
+		$sql = "SELECT * FROM teacher";
+		$result = $dbconn->query($sql);
 		$id = 0;
 		echo "<div class='container'>";
 		echo "<h2>Teachers In This System</h2>";
@@ -29,18 +34,19 @@
 					$ID = "collapse".$id."";
 					echo "<a data-toggle='collapse' href=$HREF>$name</a>";
 					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-					echo "<a style='border: 0px' href='remove.php?email=$email' title='Remove'><span class='glyphicon glyphicon-trash'></span></a>";
+					echo "<a style='border: 0px' href='remove.php?email=$email'><span class='glyphicon glyphicon-trash'></span></a>";
 					echo "</h4>";
 				echo "</div>";
 				echo "<div id=$ID class='panel-collapse collapse'>";
 					echo "<ul class='list-group'>";
-					echo "<li class='list-group-item'>Designation : $designation</li>";
-					echo "<li class='list-group-item'>Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: $email</li>";
+					echo "<li class='list-group-item'>$designation</li>";
+					echo "<li class='list-group-item'>$email</li>";
 					echo "</ul>";
 				echo "</div>";
 			echo "</div>";
 		}
 		echo "</div>";
+		$dbconn->close();
 	?>
 	</div>
 </body>
