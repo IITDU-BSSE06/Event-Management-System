@@ -1,5 +1,10 @@
 <?php
-	session_start();
+	include("../System/System.php");
+	$system = new System();
+	if($system->userTypeLoggedIn() != "admin"){
+		$system->redirectToHomePage();
+		die();
+	}
 	include("../headers/header.php");
 	include("../headers/adminheader.php");
 ?>
@@ -7,20 +12,10 @@
 <body>
 	<div>
 	<?php
-		$dbservername = "localhost";
-	    $dbusername = "root";
-	    $dbpassword = "";
-	    $dbname = "mis";
-	    $dbconn = new mysqli($dbservername, $dbusername, $dbpassword, $dbname);
-	    if($dbconn->connect_error) {
-	        echo "Connection Failed ";
-	        die("Connection failed: " . $dbconn->connect_error);
-	    }
-		$sql = "SELECT * FROM admin";
-		$result = $dbconn->query($sql);
+		$result = $system->getTableContent("requests");
 		$id = 0;
 		echo "<div class='container'>";
-		echo "<h2>Admins In This System</h2>";
+		echo "<h2>All Requests</h2>";
 		echo "<div class='panel-group'>";
 		while($row = $result->fetch_assoc()){
 			$id = $id + 1;
@@ -29,24 +24,25 @@
 					echo "<h4 class='panel-title'>";
 					$name = $row["name"];
 					$email = $row["email"];
-					$designation = $row["designation"];
+					$roll = $row["roll"];
 					$HREF = "#collapse".$id."";
 					$ID = "collapse".$id."";
 					echo "<a data-toggle='collapse' href=$HREF>$name</a>";
 					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-					echo "<a style='border: 0px' href='remove.php?email=$email'><span class='glyphicon glyphicon-trash'></span></a>";
+					echo "<a style='border: 0px' href='add.php?email=$email' title='Add'><span class='glyphicon glyphicon-ok'></span></a>";
+					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+					echo "<a style='border: 0px' href='remove.php?email=$email' title='Remove'><span class='glyphicon glyphicon-remove'></span></a>";
 					echo "</h4>";
 				echo "</div>";
 				echo "<div id=$ID class='panel-collapse collapse'>";
 					echo "<ul class='list-group'>";
-					echo "<li class='list-group-item'>$designation</li>";
-					echo "<li class='list-group-item'>$email</li>";
+					echo "<li class='list-group-item'>Roll &nbsp;&nbsp;&nbsp;: $roll</li>";
+					echo "<li class='list-group-item'>Email : $email</li>";
 					echo "</ul>";
 				echo "</div>";
 			echo "</div>";
 		}
 		echo "</div>";
-		$dbconn->close();
 	?>
 	</div>
 </body>
