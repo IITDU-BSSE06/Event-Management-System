@@ -36,7 +36,7 @@
 			    die("Connection failed: " . $dbconn->connect_error);
 			}
 		}
-		private function disconnectWithDatabase(){
+		public function disconnectWithDatabase(){
 			$this->dbconn->close();
 		}
 		public function userTypeLoggedIn(){
@@ -125,6 +125,7 @@
 			$this->connectWithDatabase();
 			$result = $this->dbconn->query($sql);
 			$this->disconnectWithDatabase();
+			return $result;
 		}
 		public function getUserTypeQuery($email, $password, $checkPassword, $table){
 			if($checkPassword == TRUE)
@@ -208,6 +209,17 @@
 			$this->connectWithDatabase();
 			$result = $this->dbconn->query($sql);
 			$this->disconnectWithDatabase();
+		}
+		public function isHoliday($date){
+			$sql = "SELECT * FROM holiday";
+			$result = $this->executeQuery($sql);
+			while($row = $result->fetch_assoc()){
+				$start = $row["start"];
+				$end = $row["end"];
+				if($date >= $start && $date <= $end)
+					return TRUE;
+			}
+			return FALSE;
 		}
 	}
 ?>

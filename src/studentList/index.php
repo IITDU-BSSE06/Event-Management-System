@@ -1,12 +1,18 @@
 <?php
 	include("../System/System.php");
 	$system = new System();
-	if($system->userTypeLoggedIn() != "admin"){
+	$userType = $system->userTypeLoggedIn();
+	if($userType == "guest"){
 		$system->redirectToHomePage();
 		die();
 	}
 	include("../headers/header.php");
-	include("../headers/adminheader.php");
+	if($userType == "admin")
+		include("../headers/adminheader.php");
+	else if($userType == "student")
+		include("../headers/studentheader.php");
+	else if($userType == "teacher")
+		include("../headers/teacherheader.php");
 ?>
 <html>
 <body>
@@ -28,8 +34,10 @@
 					$HREF = "#collapse".$id."";
 					$ID = "collapse".$id."";
 					echo "<a data-toggle='collapse' href=$HREF>$name</a>";
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-					echo "<a style='border: 0px' href='remove.php?email=$email' title='Remove'><span class='glyphicon glyphicon-trash'></span></a>";
+					if($userType == "admin"){
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+						echo "<a style='border: 0px' href='remove.php?email=$email' title='Remove'><span class='glyphicon glyphicon-trash'></span></a>";
+					}
 					echo "</h4>";
 				echo "</div>";
 				echo "<div id=$ID class='panel-collapse collapse'>";
