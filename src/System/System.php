@@ -211,6 +211,12 @@
 			$this->disconnectWithDatabase();
 		}
 		public function isHoliday($date){
+			$day = strtotime($date);
+			$day = date("l", $day);
+			$day = strtolower($day);
+			if($day == "saturday" || $day == "friday") {
+			    return TRUE;
+			}
 			$sql = "SELECT * FROM holiday";
 			$result = $this->executeQuery($sql);
 			while($row = $result->fetch_assoc()){

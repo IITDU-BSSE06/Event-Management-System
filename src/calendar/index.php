@@ -26,7 +26,7 @@
 	function draw_calendar($month,$year){
 		$system = new System();
 		$calendar = '<table cellpadding="0" cellspacing="0" class="calendar">';
-		$months = array('January', 'February', 'March','April','May','June','july','August','September','October','November','December');
+		$months = array('January', 'February', 'March','April','May','June','July','August','September','October','November','December');
 		$headings = array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday');
 		$calendar.= '<h2>'.$months[$month - 1].' '.$year.'</h2>';
 		$calendar.= '<tr class="calendar-row"><td class="calendar-day-head">'.implode('</td><td class="calendar-day-head">',$headings).'</td></tr>';
