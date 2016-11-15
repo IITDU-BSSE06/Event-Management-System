@@ -21,6 +21,7 @@
 	}
 
 	$eventUrl = $_GET["url"];
+	$_SESSION["url"] = $eventUrl;
 	$sql = "SELECT * FROM event WHERE url = '$eventUrl'";
 	$result = $system->executeQuery($sql);
 	if($result->num_rows == 0){
@@ -33,72 +34,241 @@
 	$description = $row["description"];
 	$start = $row["start"];
 	$duration = $row["duration"];
+	$notification = $row["notification"];
 	$email = $_SESSION["email"];
+	$creatorName = $system->getPropertyByEmail($creator,"name");
 	if($description == NULL) $description = "[ No Description ]";
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Bootstrap Case</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script>
-  		function makeEditable() {
-			if(document.getElementById("butt").innerHTML == "edit"){
-				document.getElementById("descript").contentEditable = true;
-				document.getElementById("butt").innerHTML = "save";
+  		function editDescription(){
+  			makeEditable('descriptbutt', 'description');
+  		}
+  		function editStart(){
+  			makeEditable('startbutt', 'start');
+  		}
+  		function editCreator(){
+  			if(document.getElementById('creatorbutt').innerHTML == "edit"){
+  				document.getElementById("creator").innerHTML = "<?php echo $creator ?>";
+  			}
+  			makeEditable('creatorbutt', 'creator');
+  		}
+  		function editNotification(){
+  			window.location.href = "change.php?url=<?php echo $eventUrl ?>&notification=" + <?php echo ($notification ? 0 : 1) ?>;
+  		}
+  		function editDuration(){
+  			makeEditable('durationbutt', 'duration');
+  		}
+  		function editName() {
+  			makeEditable('namebutt', 'name');
+  		}
+  		function editSubEvent(button){
+  			var buttonid = button.id;
+  			var contentid = buttonid + "extra";
+  			var content = document.getElementById(contentid).innerHTML;
+  			var field = button.name;
+  			makeFieldEditable(buttonid, contentid, field);
+  		}
+  		function changeNotification(button){
+  			var buttonid = button.id;
+  			var contentid = buttonid + "extra";
+  			var content = document.getElementById(contentid).innerHTML;
+  			var field = button.name;
+  			var subname = document.getElementById(contentid).className;
+  			var val = '0';
+  			if(content.length > 3) val = '1';
+  			window.location.href = "change.php?url=<?php echo $eventUrl ?>&sub=" + subname + "&"+field +"=" + val;
+  		}
+  		function makeFieldEditable(butt, field, name) {
+  			if(document.getElementById(butt).innerHTML == "edit"){
+				document.getElementById(field).contentEditable = true;
+				document.getElementById(butt).innerHTML = "save";
 			}
 			else{
-				document.getElementById("descript").contentEditable = false;
-				document.getElementById("butt").innerHTML = "edit";
-				window.location.href = "change.php?url=<?php echo $eventUrl ?>&description=" + document.getElementById("descript").innerHTML;
+				var subname = document.getElementById(field).className;
+				var url = "change.php?url=<?php echo $eventUrl ?>&sub=" + subname + "&"+name +"=" + document.getElementById(field).innerHTML;
+				window.location.href = url;
+			}
+		}
+  		function makeEditable(butt, field) {
+  			if(document.getElementById(butt).innerHTML == "edit"){
+				document.getElementById(field).contentEditable = true;
+				document.getElementById(butt).innerHTML = "save";
+			}
+			else{
+				window.location.href = "change.php?url=<?php echo $eventUrl ?>&"+field +"=" + document.getElementById(field).innerHTML;
 			}
 		}
   </script>
-</head>
-<body>
+
 	<div class="container">
 		<div class="jumbotron">
 			<h1><?php echo $name ?></h1>
 		</div>
 		<ul class="nav nav-tabs">
-			<li class="active"><a data-toggle="tab" href="#description">Description</a></li>
+			<li class="active"><a data-toggle="tab" href="#descript">Description</a></li>
 			<li><a data-toggle="tab" href="#date">Date</a></li>
 			<li><a data-toggle="tab" href="#sub">Sub Events</a></li>
 			<?php if($email == $creator){
+				echo "<li><a data-toggle='tab' href='#add'>Add</a></li>";
 				echo "<li><a data-toggle='tab' href='#settings'>Settings</a></li>";
 			} ?>
 		</ul>
 		<div class="tab-content">
-			<div id="description" class="tab-pane fade in active">
+			<div id="descript" class="tab-pane fade in active">
 				<br> <div class="panel panel-default">
-					<div id="descript" class="panel-body"><?php echo $description ?></div>
+					<div id="description" class="panel-body"><?php echo $description ?></div>
 					<?php if($email == $creator){
-						echo "<button type='button' onclick='makeEditable()' id='butt' class='btn btn-link'>edit</button>";
+						echo "<button type='button' onclick='editDescription()' id='descriptbutt' class='btn btn-link'>edit</button>";
 					} ?>
 				</div>
 			</div>
 			<div id="date" class="tab-pane fade">
 				<br> <div class="panel panel-default">
 					<div class="panel-body">
-						<p> <b> Starts &nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;</b> <?php echo $start ?> </p>
-						<p> <b> Duration : &nbsp;</b> <?php echo $duration ?> days</p>
+						<div class="row">
+							<div class="col-xs-2"><b> Starts :</b></div>
+							<div id="start" class="col-xs-1"><?php echo $start ?></div>
+							<?php if($email == $creator){
+								echo "<div class='col-xs-2'><button type='button' onclick='editStart()' id='startbutt' class='btn btn-link'>edit</button></div>";
+							} ?>
+						</div>
+						<div class="row">
+							<div class="col-xs-2"><b> Duration :</b></div>
+							<div id="duration" class="col-xs-1"><?php echo $duration ?></div>
+							<?php if($email == $creator){
+								echo "<div class='col-xs-2'><button type='button' onclick='editDuration()' id='durationbutt' class='btn btn-link'>edit</button></div>";
+							} ?>
+						</div>
 					</div>
 				</div>
 			</div>
 			<div id="sub" class="tab-pane fade">
-				<br><p>Sub events here.</p>
+				<?php
+					$sql = "SELECT * FROM $eventUrl";
+					$result = $system->executeQuery($sql);
+					echo "<br>";
+					while ($row = $result->fetch_assoc()) {
+						$subEventName = $row["name"];
+						$subEventdescription = $row["description"];
+						$subEventStart = $row["start"];
+						$subEventDuration = $row["duration"];
+						$subEventNotification = $row["notification"];
+						echo "<div class='panel panel-default'>";
+							echo "<div class='panel-body'>";
+								echo "<div class='row'>";
+									$buttid = $subEventName."name";
+									$fieldid = $buttid."extra";
+									echo "<div class='col-xs-2'>";
+									echo "<div id='$fieldid' class = '$subEventName'>$subEventName</div>";
+									echo "</div>";
+									if($email == $creator){
+										echo "<button type='button' onclick='editSubEvent(this)' id = '$buttid' name = 'name' class='btn btn-link'>edit</button>";
+									}
+								echo "</div>";
+								echo "<div class='row'>";
+									$buttid = $subEventName."description";
+									$fieldid = $buttid."extra";
+									echo "<div class='col-xs-2'><b> Details :</b></div>";
+									echo "<div class='col-xs-6'>";
+										echo "<div id='$fieldid' class = '$subEventName'>$subEventdescription</div>";
+									echo "</div>";
+									if($email == $creator){
+										echo "<button type='button' onclick='editSubEvent(this)' id = '$buttid' name = 'description' class='btn btn-link'>edit</button>";
+									}
+								echo "</div>";
+								echo "<div class='row'>";
+									$buttid = $subEventName."start";
+									$fieldid = $buttid."extra";
+									echo "<div class='col-xs-2'><b> Starts :</b></div>";
+									echo "<div class='col-xs-6'>";
+									echo "<div id='$fieldid' class = '$subEventName'> $subEventStart</div>";
+									echo "</div>";
+									if($email == $creator){
+										echo "<button type='button' onclick='editSubEvent(this)' id='$buttid' name='start' class='btn btn-link'>edit</button>";
+									}
+								echo "</div>";
+								echo "<div class='row'>";
+									$buttid = $subEventName."duration";
+									$fieldid = $buttid."extra";
+									echo "<div class='col-xs-2'><b> Duration :</b></div>";
+									echo "<div class='col-xs-1'>";
+									echo "<div id='$fieldid' class = '$subEventName'>$subEventDuration</div>";
+									echo "</div>";
+									echo "<div id='$fieldid' class = 'col-xs-5'>days</div>";
+									if($email == $creator){
+										echo "<button type='button' onclick='editSubEvent(this)' id='$buttid' name='duration' class='btn btn-link'>edit</button>";
+									}
+								echo "</div>";
+								if($email == $creator){
+									echo "<div class='row'>";
+										$buttid = $subEventName."notification";
+										$fieldid = $buttid."extra";
+										echo "<div class='col-xs-2'><b> Notification :</b></div>";
+										$subEventStaus = $subEventNotification ? 'ON' : 'OFF';
+										echo "<div class='col-xs-6'>";
+											echo "<div id='$fieldid' class = '$subEventName'> $subEventStaus</div>";
+										echo "</div>";
+										if($email == $creator){
+											echo "<button type='button' onclick='changeNotification(this)' id='$buttid' name='notification' class='btn btn-link'>edit</button>";
+										}
+									echo "</div>";
+									echo "<a href='removeSub.php?url=$eventUrl&sub=$subEventName'><button>delete</button></a>";
+								}
+							echo "</div>";
+						echo "</div>";
+					}
+				?>
 			</div>
 			<?php if($email == $creator){
-				echo"<div id='settings' class='tab-pane fade'>";
-					echo "<br><p>$email</p>";
+				echo "<br><div id='add' class='tab-pane fade'>";
+					echo "<div class='panel panel-default'>";
+						echo "<div class='panel-body'>";
+							echo "<h3 style='text-align: center;'>Add Sub Event</h3>";
+							echo "<form role='form' action='addSubEvent.php' method='post'>";
+								echo "<div class='form-group'>";
+									echo "<label for='name'>Name:</label>";
+									echo "<input type='text' required='true' class='form-control' name='name' placeholder='Enter sub event name'>";
+								echo "</div>";
+								echo "<div class='form-group'>";
+									echo "<label for='description'>Description:</label>";
+									echo "<input type='text' required='true' class='form-control' name='description' placeholder='Description'>";
+								echo "</div>";
+								echo "<div class='form-group'>";
+									echo "<label for='start'>Start Date:</label>";
+									echo "<input type='date' required='true' class='form-control' name='start' placeholder='Enter start date'>";
+								echo "</div>";
+								echo "<div class='form-group'>";
+									echo "<label for='duration'>Duration:</label>";
+									echo "<input type='number' required='true' class='form-control' name='duration' placeholder='Enter duration of this sub event'>";
+								echo "</div>";
+								echo "<button type='submit' class='btn btn-default'>Submit</button>";
+							echo "</form>";
+						echo "</div>";
+					echo "</div>";
+				echo "</div>";
+				echo "<div id='settings' class='tab-pane fade'>";
+					echo "<br> <div class='panel panel-default'>";
+						echo "<div class='panel-body'>";
+							echo "<div class='row'>";
+								echo "<div class='col-xs-2'><b> Name :</b></div>";
+								echo "<div id='name' class='col-xs-2'>$name</div>";
+								echo "<div class='col-xs-2'><button type='button' onclick='editName()' id='namebutt' class='btn btn-link'>edit</button></div>";
+							echo "</div>";
+							echo "<div class='row'>";
+								echo "<div class='col-xs-2'><b> Owner :</b></div>";
+								echo "<div id='creator' class='col-xs-2'>$creatorName ($creator)</div>";
+								echo "<div class='col-xs-2'><button type='button' onclick='editCreator()' id='creatorbutt' class='btn btn-link'>edit</button></div>";
+							echo "</div>";
+							echo "<br><div class='row'>";
+								echo "<div class='col-xs-2'><b> Notification :</b></div>";
+								$staus = $notification ? 'ON' : 'OFF';
+								echo "<div id='start' class='col-xs-2'>$staus</div>";
+								echo "<div class='col-xs-2'><button type='button' onclick='editNotification()' id='notificationbutt' class='btn btn-link'>edit</button></div>";
+							echo "</div>";
+						echo "</div>";
+					echo "</div>";
 				echo "</div>";
 			} ?>
 		</div>
 	</div>
-</body>
-</html>
+

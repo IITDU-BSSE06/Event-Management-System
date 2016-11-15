@@ -26,6 +26,8 @@
 				<ul class="nav navbar-nav">
 					<li><a href="http://localhost/mis/TeacherList" title="List of Teachers"><span class="glyphicon glyphicon-user"></span> Teachers</a></li>
 					<li><a href="http://localhost/mis/calendar"><span class="glyphicon glyphicon-calendar"></span> Calendar</a></li>
+					<li><a href="http://localhost/mis/events"><span class="glyphicon glyphicon-list"></span> Events</a></li>
+					<li><a href="http://localhost/mis/templates"><span class="glyphicon glyphicon-duplicate"></span> Temaplates</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">

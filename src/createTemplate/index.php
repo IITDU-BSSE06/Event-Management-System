@@ -2,17 +2,12 @@
 	include("../System/System.php");
 	$system = new System();
 	$userType = $system->userTypeLoggedIn();
-	if($userType == "guest"){
+	if($userType != "admin"){
 		$system->redirectToHomePage();
 		die();
 	}
 	include("../headers/header.php");
-	if($userType == "admin")
-		include("../headers/adminheader.php");
-	else if($userType == "student")
-		include("../headers/studentheader.php");
-	else if($userType == "teacher")
-		include("../headers/teacherheader.php");
+	include("../headers/adminheader.php");
 ?>
 
 <!DOCTYPE html>
@@ -34,10 +29,10 @@ $roll = 0;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $url= test_input($_POST["url"]);
-    $sql = "SELECT * FROM event WHERE url = '$url'";
+    $sql = "SELECT * FROM template WHERE url = '$url'";
     if($system->isDataexists($sql)){
     	echo "<script>alert('URL is not available. Retry with another url.');</script>";
-    	$system->redirectToPage("http://localhost/mis/createEvent/");
+    	$system->redirectToPage("http://localhost/mis/createTemplate/");
     	die();
     }
     else{
@@ -45,25 +40,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 		$val = $system->executeQuery($sql);
 		if($val->num_rows > 0){
 			echo "<script>alert('URL is not available. Retry with another url.');</script>";
-			$system->redirectToPage("http://localhost/mis/createEvent/");
+			$system->redirectToPage("http://localhost/mis/createTemplate/");
 			die();
 		}
-    	$email = $system->getUserEmail();
     	$name = test_input($_POST["name"]);
-    	$start = test_input($_POST["start"]);
     	$duration = test_input($_POST["duration"]);
-        $sql = "INSERT INTO event (name, url, creator, start, duration) VALUES ('$name', '$url', '$email','$start','$duration')";
+        $sql = "INSERT INTO template (name, url, duration) VALUES ('$name', '$url', '$duration')";
         $system->executeQuery($sql);
        	$sql = "CREATE TABLE $url(
 				name varchar(30),
-				description varchar(500),
-				start date,
-				duration int(10),
-				notification Boolean
+                start int(10),
+				duration int(10)
 				)";
         $system->executeQuery($sql);
-        echo "<script>alert('Congrats ! Your event was successfully added.');</script>";
-        $system->redirectToPage("http://localhost/mis/events/");
+        echo "<script>alert('Congrats ! Your template was successfully added.');</script>";
+        $system->redirectToPage("http://localhost/mis/templates/");
     }
 }
 
@@ -76,19 +67,15 @@ function test_input($data) {
 ?>
 
 <div class="container">
-    <h2>Create An Event</h2>
+    <h2>Create A Template</h2>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
         <div class="form-group">
-            <label for="name">Event Name:</label>
-            <input type="text" class="form-control" id="name" name="name" placeholder="Enter event name" required>
+            <label for="name">Template Name:</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" required>
         </div>
         <div class="form-group">
             <label for="url">Choose An URL:</label>
             <input type="text" class="form-control" id="url" name="url" placeholder="Choose an url" required>
-        </div>
-        <div class="form-group">
-            <label for="start">Start Date:</label>
-            <input type="date" class="form-control" id="start" name="start" placeholder="Select start date (Year-Month-Day)" required>
         </div>
         <div class="form-group">
             <label for="duration">Duration:</label>
