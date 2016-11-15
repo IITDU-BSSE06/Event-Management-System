@@ -51,6 +51,7 @@
 					echo "<ul class='list-group'>";
 					echo "<li class='list-group-item'>Starts : $eventStart, Duration : $duration days</li>";
 					echo "<li class='list-group-item'>$description</li>";
+					echo "<li class='list-group-item'><a href='http://localhost/mis/event?url=$eventUrl'><button>Enter</button></a></li>";
 					echo "</ul>";
 				echo "</div>";
 			echo "</div>";

@@ -1,10 +1,5 @@
 <?php
 
-/*$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "spl2";*/
-
 echo "RA Rahat";
 
 $to      = 'froghramar@gmail.com';
