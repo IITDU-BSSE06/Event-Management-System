@@ -240,6 +240,19 @@
 			}
 			return FALSE;
 		}
+		public function nextDate($date){
+			$date = date('Y-m-d', strtotime('+1 day', strtotime($date)));
+			return $date;
+		}
+		public function dateAfterDays($date, $after){
+			for($i=0; $i < $after; $i++) { 
+				$date = $this->nextDate($date);
+				while($this->isHoliday($date)){
+					$date = $this->nextDate($date);
+				}
+			}
+			return $date;
+		}
 		public function clean($string) {
 			$string = str_replace(' ', '-', $string);
 			return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
