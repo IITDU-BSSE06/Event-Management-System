@@ -13,6 +13,11 @@
 	}
 	else{
 		$system->addStudent($_POST["name"],$_POST["roll"],$_POST["email"],$_POST["password"]);
+		$email = $system->clean($email);
+		$sql = "CREATE TABLE $email(
+					url varchar(30)
+				)";
+		$system->executeNotificationQuery($sql);
 		$system->showAlertMessage("Student Added");
 		$system->redirectToPage('http://localhost/mis/studentList/');
 	}

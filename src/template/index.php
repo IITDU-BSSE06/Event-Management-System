@@ -74,9 +74,13 @@
 	<div class="container">
 		<div class="jumbotron">
 			<h1><?php echo $name ?></h1>
+			<?php
+				$URL = "useTemplate.php?url=".$eventUrl;
+			?>
+			<a href="<?php echo $URL ?>"><button>Use This Template</button></a>
 		</div>
 		<ul class="nav nav-tabs">
-			<li class="active"><a data-toggle="tab" href="#date">Date</a></li>
+			<li class="active"><a data-toggle="tab" href="#date">Duration</a></li>
 			<li><a data-toggle="tab" href="#sub">Sub Events</a></li>
 			<?php if($userType == "admin"){
 				echo "<li><a data-toggle='tab' href='#add'>Add</a></li>";

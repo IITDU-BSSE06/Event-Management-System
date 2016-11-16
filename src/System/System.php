@@ -127,6 +127,19 @@
 			$this->disconnectWithDatabase();
 			return $result;
 		}
+		public function connectWithNotificationDatabase(){
+			$this->dbconn = new mysqli($this->dbservername, $this->dbusername, $this->dbpassword, "notification");
+			if($this->dbconn->connect_error) {
+			    echo "Connection Failed ";
+			    die("Connection failed: " . $dbconn->connect_error);
+			}
+		}
+		public function executeNotificationQuery($sql){
+			$this->connectWithNotificationDatabase();
+			$result = $this->dbconn->query($sql);
+			$this->disconnectWithDatabase();
+			return $result;
+		}
 		public function getUserTypeQuery($email, $password, $checkPassword, $table){
 			if($checkPassword == TRUE)
 				$sql = "SELECT * FROM $table WHERE email = '$email' AND password = '$password'";
@@ -226,6 +239,16 @@
 					return TRUE;
 			}
 			return FALSE;
+		}
+		public function clean($string) {
+			$string = str_replace(' ', '-', $string);
+			return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+		}
+		public function escape($string){
+			$this->connectWithDatabase();
+			$res = mysqli_real_escape_string($this->dbconn, $string);;
+			$this->disconnectWithDatabase();
+			return $res; 
 		}
 	}
 ?>

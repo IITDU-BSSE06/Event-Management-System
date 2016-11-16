@@ -38,6 +38,15 @@
 	$email = $_SESSION["email"];
 	$creatorName = $system->getPropertyByEmail($creator,"name");
 	if($description == NULL) $description = "[ No Description ]";
+	$emailClean = $system->clean($email);
+	$sql = "SELECT * FROM $emailClean WHERE url ='$eventUrl'";
+	$result = $system->executeNotificationQuery($sql);
+	if($result->num_rows > 0){
+		$userNotification = 1;
+	}
+	else{
+		$userNotification = 0;
+	}
 ?>
   <script>
   		function editDescription(){
@@ -102,7 +111,15 @@
 
 	<div class="container">
 		<div class="jumbotron">
-			<h1><?php echo $name ?></h1>
+			<h1><?php echo $name ?></h1><br>
+			<?php
+				if($userNotification == 0){
+					echo "<a href='addChoice.php?url=$eventUrl'><button>Turn ON Notification</button></a>";
+				}
+				else{
+					echo "<a href='removeChoice.php?url=$eventUrl'><button>Turn OFF Notification</button></a>";
+				}
+			?>
 		</div>
 		<ul class="nav nav-tabs">
 			<li class="active"><a data-toggle="tab" href="#descript">Description</a></li>
@@ -147,6 +164,11 @@
 					$sql = "SELECT * FROM $eventUrl";
 					$result = $system->executeQuery($sql);
 					echo "<br>";
+					if($result->num_rows == 0){
+						echo "<div class='panel panel-default'>";
+							echo "<div id='description' class='panel-body'>[No Sub Events]</div>";
+						echo "</div>";
+					}
 					while ($row = $result->fetch_assoc()) {
 						$subEventName = $row["name"];
 						$subEventdescription = $row["description"];
