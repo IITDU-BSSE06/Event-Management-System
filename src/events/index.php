@@ -2,6 +2,11 @@
 	include("../System/System.php");
 	$system = new System();
 	$userType = $system->userTypeLoggedIn();
+	if($userType == "guest"){
+		$system->redirectToLogInPage();
+		die();
+	}
+	include("../headers/header.php");
 	if($userType == "admin"){
 		include("../headers/adminheader.php");
 	}
@@ -10,9 +15,6 @@
 	}
 	else if($userType == "student"){
 		include("../headers/studentheader.php");
-	}
-	else{
-		include("../headers/menubarwithoutlogin.php");
 	}
 ?>
 

@@ -10,6 +10,7 @@
 		$system->redirectToPage('http://localhost/mis/events/');
 		die();
 	}
+	include("../headers/header.php");
 	if($userType == "admin"){
 		include("../headers/adminheader.php");
 	}

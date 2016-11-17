@@ -2,14 +2,6 @@
 	$system = new System();
 	$name = $system->getUsername();
 ?>
-<html>
-<title>Admin</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-</head>
 <body>
 	<nav class="navbar navbar-inverse">
 		<div class="container-fluid">
@@ -35,6 +27,7 @@
 						<ul class="dropdown-menu">
 							<?php echo "<li><a href='http://localhost/mis/teacher' title='View Profile'><span class='glyphicon glyphicon-user'></span> $name</a></li>"; ?>
 							<li><a href="http://localhost/mis/changePassword" title="Change Your Password"><span class='glyphicon glyphicon-wrench'></span> Change Password</a></li>
+							<li><a href="http://localhost/mis/createEvent" title="Create An Event"><span class='glyphicon glyphicon-plus'></span> Create Event</a></li>
 						</ul>
 					</li>
 					<li><a href="http://localhost/mis/SignOut" title="Sign Out"><span class="glyphicon glyphicon-log-out"></span> Sign Out</a></li>
