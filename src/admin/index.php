@@ -31,7 +31,7 @@
 		<tr><th>News Feed</th></tr>
 	</thead>
 	<tbody>
-	<tr><td><a href='#'><span class='glyphicon glyphicon-send'></span> Notifications <span class='badge'>3</span></a><br></td></tr>
+	<tr><td><a href='http://localhost/mis/notifications/'><span class='glyphicon glyphicon-send'></span> Notifications <span class='badge'>new</span></a><br></td></tr>
 	<tr><td><a href='http://localhost/mis/Requests/'><span class='glyphicon glyphicon-user'></span> Verification Requests <span class='badge'><?php echo $requests ?></span></a><br></td></tr>
 	</tbody>
 	</table>

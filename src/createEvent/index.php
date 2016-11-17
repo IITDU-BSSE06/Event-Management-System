@@ -6,13 +6,6 @@
 		$system->redirectToHomePage();
 		die();
 	}
-	include("../headers/header.php");
-	if($userType == "admin")
-		include("../headers/adminheader.php");
-	else if($userType == "student")
-		include("../headers/studentheader.php");
-	else if($userType == "teacher")
-		include("../headers/teacherheader.php");
 ?>
 
 

@@ -10,15 +10,6 @@
 		$system->redirectToPage('http://localhost/mis/events/');
 		die();
 	}
-	if($userType == "admin"){
-		include("../headers/adminheader.php");
-	}
-	else if($userType == "teacher"){
-		include("../headers/teacherheader.php");
-	}
-	else if($userType == "student"){
-		include("../headers/studentheader.php");
-	}
 	$url = $_GET["url"];
 	$email = $_SESSION["email"];
 	$email = $system->clean($email);

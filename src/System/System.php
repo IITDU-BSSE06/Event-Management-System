@@ -263,5 +263,9 @@
 			$this->disconnectWithDatabase();
 			return $res; 
 		}
+		public function dateDiff($date1, $date2){
+			$diff = floor( (strtotime($date2) - strtotime($date1)) / (60 * 60 * 24) );
+			return $diff;
+		}
 	}
 ?>
